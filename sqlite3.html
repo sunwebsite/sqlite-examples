@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script type="text/javascript">
+
+
+
+/* var rslt = document.getElementById('rslt'); 
+
+var createStatement = "CREATE TABLE IF NOT EXISTS mytabel (nam TEXT)";
+var selectAllStatement = "SELECT * FROM mytabel";
+var insertStatement = "INSERT INTO mytabel (nam) VALUES (?)";
+
+ var db = openDatabase("AddressBook", "1.0", "Address Book", 200000);
+ var dataset;
+ createTable();
+ insertRecord();
+ function onError(tx, error) {
+  alert(error.message);
+ }
+ function createTable() { 
+	db.transaction(function(tx) {
+	  tx.executeSql(createStatement, [], showRecords, onError);
+	});
+  }
+  function insertRecord() {
+	db.transaction(function(tx) {
+	  tx.executeSql(insertStatement, ["myname"], showRecords, onError);
+	});
+  }
+  function showRecords() {
+	rslt.innerHTML = '';
+	db.transaction(function(tx) {
+	  tx.executeSql(selectAllStatement, [], function(tx, result) {
+		dataset = result.rows;
+		for (var i = 0, item = null; i < dataset.length; i++) {
+		  item = dataset.item(i);
+		  rslt.innerHTML += item['nam'] + '   ';
+		}
+	  });
+	});
+  }*/
+
+
+</script>
+</head>
+<body>
+<div id="rslt">result here</div>
+</body>
+<script type="text/javascript">
+
+var db = openDatabase("mydb","1.0","dbbbbb",200000);
+createtbl();
+insertrec();
+tem='';
+function err(txn, ee)
+{
+	alert(ee.message);
+}
+function createtbl(){
+	db.transaction(function(txn){
+		//txn.executeSql("delete from albam)");		
+		//txn.executeSql("DROP TABLE albam)");		
+		txn.executeSql("CREATE TABLE IF NOT EXISTS abcd1(id integer primary key, name TEXT, address TEXT, phone text, contact text, texts text, comment1 text, comment2 text, comment3 text, comment4 text)",[],showrec, err);
+		//txn.executeSql("CREATE TABLE IF NOT EXISTS song (albamid INTEGER, songname TEXT, FOREIGN KEY(albamid) REFERENCES albam(id))",[],showrec, err);
+	
+	});
+}
+function insertrec(){
+	db.transaction(function(txn){
+		//for(i=0;i<=15000;i++)
+		//{
+			//for(i=0;i<5000;i++)
+			{
+		txn.executeSql("INSERT INTO abcd1(id, name, address, phone, contact, texts, comment1, comment2, comment3, comment4) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",[Math.ceil(Math.random()*100000), "ARR("+Math.ceil(Math.random()*100000)+")", "add", "ph:96866366", "c:4555445","txt:some text", "c1:aaaaaaa", "c2:bbbbbb", "c3:cccccc","c4:wwwwdfssd sdfsdf sdflksdflsd dfgkdfgfd dfhsdfjlsdfsdf sdflkjsdf sdfkjsdflksd sdfsdf"],showrec,err);
+			}
+		/*txn.executeSql("SELECT last_insert_rowid() as lastid",[],function (txn,res){
+			dts = res.rows;
+			alert(dts.item(0)['lastid']);
+			rr = dt.item(0)['lastid'];*/
+		//txn.executeSql("INSERT INTO song (albamid, songname) VALUES(?,?)",[Math.ceil(Math.random()*100000), "sign("+Math.ceil(Math.random()*100000)+")"],showrec,err);
+		/*});*/
+		
+		//}
+		//Math.ceil(Math.random()*10)
+	});
+}
+function showrec()
+{
+	db.transaction(function(txn){
+		itm=null;				
+		txn.executeSql("select * from abcd1 group by id",[],function (txn,res){
+			dt = res.rows;			
+			for(i=0;i<dt.length;i++){
+				itm = dt.item(i);
+				
+				tem += i + " $$ " + itm['id'] + " -- " + itm['name'] + " -- " + itm['address'] + " -- " + itm['phone'] + " -- " + itm['contact'] + " -- " + itm['texts'] + " -- " + itm['comment1'] + " -- " + itm['comment2'] + " -- " + itm['comment3'] + " -- " + itm['comment4'] + "<br/>";
+			}			
+		});
+		document.getElementById("rslt").innerHTML = tem;
+	});
+}
+</script>
+</html>
