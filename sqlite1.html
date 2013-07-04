@@ -1,0 +1,225 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>SQL Storage</title>
+</head>
+  <body>    
+   <br/><br/>
+    <div align="center">
+     <input type="hidden" id="id"/>
+     First name:<input type="text" id="firstName"/><br/>
+     Last name:<input type="text" id="lastName"/><br/>
+     Phone: <input type="text" id="phone"/><br/>
+     <button onClick="resetForm()">Reset Form</button>
+     <button onClick="updateRecord()">Update</button>
+     <button onClick="insertRecord()">Insert</button>
+        <button onClick="dropTable()">Drop Table</button>
+     <div id="results"></div>
+    </div>
+    <div id="company">company</div>
+    <div id="contacts">contacts</div>
+  </body>
+  
+    <script>
+
+var name="myname", addr1="myaddress", addr2="addr2", city="mycity", state="mystate", zip="123456";
+
+
+var db = function(){
+  this.dbname = "Sample";
+	this.dbversion = "1.0";
+	this.dbdesc = "Sample database";
+	this.dbsize = (20*1024*1024);	
+	this.opendb = createDaB(this.dbname, this.dbversion, this.dbdesc, this.dbsize);
+};
+
+var createDaB = function(dbname, dbversion, dbdesc, dbsize){
+	return openDatabase(dbname, dbversion, dbdesc, dbsize);
+};
+
+// Statements Object
+var statements = {
+	// tablename as object
+	company: {
+		createStatement: "CREATE TABLE IF NOT EXISTS Company (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, addr1 TEXT, addr2 TEXT, city TEXT, state TEXT, zip TEXT)",
+		selectAllStatement: "SELECT * FROM Company",
+		insertStatement: "INSERT INTO Company (name, addr1, addr2, city, state, zip) VALUES (?, ?, ?, ?, ?, ?)",
+		updateStatement: "UPDATE Company SET name = ?, addr1 = ?, addr2 = ?, city = ?, state = ?, zip = ? WHERE id = ?",
+		deleteStatement: "DELETE FROM Company WHERE id = ?",
+		dropStatement: "DROP TABLE Company"
+	},
+	contacts: {
+		createStatement: "CREATE TABLE IF NOT EXISTS Contacts (id INTEGER PRIMARY KEY AUTOINCREMENT, firstName TEXT, lastName TEXT, phone TEXT)",
+		selectAllStatement: "SELECT * FROM Contacts",
+		insertStatement: "INSERT INTO Contacts (firstName, lastName, phone) VALUES (?, ?, ?)",
+		updateStatement: "UPDATE Contacts SET firstName = ?, lastName = ?, phone = ? WHERE id = ?",
+		deleteStatement: "DELETE FROM Contacts WHERE id=?",
+		dropStatement: "DROP TABLE Contacts"
+	}
+};
+
+var createTable = function(){
+	var stmt = statements;
+	dbobj.opendb.transaction(function(txn) {
+		for(prop in stmt){			
+			txn.executeSql(stmt[prop].createStatement, [], this.showRecords, this.onError);
+			alert(stmt[prop].createStatement + "   Created");
+		}
+	});
+};
+
+var insertRecord = function(){
+	dbobj.opendb.transaction(function(txn) {
+		//txn.executeSql(insertStatement, [firstName.value, lastName.value, phone.value], loadAndReset, onError);
+		alert("inserted");
+	});
+};
+
+dbobj = new db();
+tblobj = new createTable();
+
+/*var db = {
+	initialize: function(){
+		this.dbname = "Sample";
+		this.dbversion = "1.0";
+		this.dbdesc = "Sample database";
+		this.dbsize = (20*1024*1024);		
+		this.createdb = this.createDaB();
+		this.createtbl = this.createTable();
+	},
+	statements: {
+		company: {
+			createStatement: "CREATE TABLE IF NOT EXISTS Company (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, addr1 TEXT, addr2 TEXT, city TEXT, state TEXT, zip TEXT)",
+			selectAllStatement: "SELECT * FROM Company",
+			insertStatement: "INSERT INTO Company (name, addr1, addr2, city, state, zip) VALUES (?, ?, ?, ?, ?, ?)",
+			updateStatement: "UPDATE Company SET name = ?, addr1 = ?, addr2 = ?, city = ?, state = ?, zip = ? WHERE id = ?",
+			deleteStatement: "DELETE FROM Company WHERE id = ?",
+			dropStatement: "DROP TABLE Company"
+		},
+		contacts: {
+			createStatement: "CREATE TABLE IF NOT EXISTS Contacts (id INTEGER PRIMARY KEY AUTOINCREMENT, firstName TEXT, lastName TEXT, phone TEXT)",
+			selectAllStatement: "SELECT * FROM Contacts",
+			insertStatement: "INSERT INTO Contacts (firstName, lastName, phone) VALUES (?, ?, ?)",
+			updateStatement: "UPDATE Contacts SET firstName = ?, lastName = ?, phone = ? WHERE id = ?",
+			deleteStatement: "DELETE FROM Contacts WHERE id=?",
+			dropStatement: "DROP TABLE Contacts"
+		}
+	},
+	createDaB: function(){
+		alert("dfdffd");
+		this.openDB = openDatabase(this.dbname, this.dbversion, this.dbdesc, this.dbsize);		
+		alert("cre ");
+	},
+	createTable: function(){		
+		var stmt = this.statements;
+		this.openDB.transaction(function(tx) {
+			for(prop in stmt){
+				tx.executeSql(stmt[prop].createStatement, [], this.showRecords, this.onError);				
+			}
+		});
+
+
+		alert(this.statements.company.createStatement);
+		alert(this.statements.contacts.createStatement);		
+	},
+	showRecords: function(){
+		alert("success");
+	},
+	onError: function(){
+		alert("error");
+	}
+};
+db.initialize();*/
+
+	/*
+	 
+ var results = document.getElementById('results'); 
+ var id = document.getElementById('id');
+ var firstName = document.getElementById('firstName');  
+ var lastName = document.getElementById('lastName');  
+ var phone = document.getElementById('phone');
+   
+ var createStatement = "CREATE TABLE IF NOT EXISTS Contacts (id INTEGER PRIMARY KEY AUTOINCREMENT, firstName TEXT, lastName TEXT, phone TEXT)";
+ var selectAllStatement = "SELECT * FROM Contacts";
+ var insertStatement = "INSERT INTO Contacts (firstName, lastName, phone) VALUES (?, ?, ?)";
+ var updateStatement = "UPDATE Contacts SET firstName = ?, lastName = ?, phone = ? WHERE id = ?";
+ var deleteStatement = "DELETE FROM Contacts WHERE id=?";
+ var dropStatement = "DROP TABLE Contacts";
+
+ var db = openDatabase("AddressBook", "1.0", "Address Book", 200000);
+ var dataset;
+ createTable();
+
+      function onError(tx, error) {
+        alert(error.message);
+      }
+      
+      function showRecords() {
+        results.innerHTML = '';
+        db.transaction(function(tx) {
+          tx.executeSql(selectAllStatement, [], function(tx, result) {
+dataset = result.rows;
+            for (var i = 0, item = null; i < dataset.length; i++) {
+              item = dataset.item(i);
+              results.innerHTML += 
+                  '<li>' + item['lastName'] + ' , ' + item['firstName'] + ' <a href="#" onclick="loadRecord('+i+')">edit</a>  ' +  
+ '<a href="#" onclick="deleteRecord('+item['id']+')">delete</a></li>';
+}
+          });
+        });
+      }
+      
+      function createTable() { 
+        db.transaction(function(tx) {
+          tx.executeSql(createStatement, [], showRecords, onError);
+        });
+      }
+      
+      function insertRecord() {
+        db.transaction(function(tx) {
+          tx.executeSql(insertStatement, [firstName.value, lastName.value, phone.value], loadAndReset, onError);
+        });
+      }
+      
+ function loadRecord(i) {
+var item = dataset.item(i); 
+        firstName.value = item['firstName'];
+lastName.value = item['lastName'];
+phone.value = item['phone'];
+id.value = item['id']; 
+      }
+
+      function updateRecord() {
+        db.transaction(function(tx) {
+          tx.executeSql(updateStatement, [firstName.value, lastName.value, phone.value, id.value], loadAndReset, onError);
+        }); 
+      }
+      
+      function deleteRecord(id) {
+        db.transaction(function(tx) {
+          tx.executeSql(deleteStatement, [id], showRecords, onError);
+        });
+resetForm();
+      }
+       
+      function dropTable() {
+        db.transaction(function(tx) {
+          tx.executeSql(dropStatement, [], showRecords, onError);
+        });
+resetForm();
+      }
+
+ function loadAndReset(){
+ resetForm();
+ showRecords();
+ }
+
+ function resetForm(){
+firstName.value = '';
+lastName.value = '';
+phone.value = '';
+id.value = ''; 
+ }*/
+    </script>
+</html>
